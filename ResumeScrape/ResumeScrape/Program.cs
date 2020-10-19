@@ -9,8 +9,14 @@ namespace ResumeScrape
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Initiating Web Scrape");
 
+
+        }
+
+
+        static void old()
+        {
             IWebDriver driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.google.com");
 
@@ -36,7 +42,7 @@ namespace ResumeScrape
             foreach (var title in titles)
                 titleStrings.Add(title.Text);
 
-            foreach(var title in titleStrings)
+            foreach (var title in titleStrings)
                 Console.WriteLine(title);
 
             //*[@id="tsf"]/div[2]/div[1]/div[1]/div/div[2]/input
