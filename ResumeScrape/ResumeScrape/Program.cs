@@ -10,8 +10,23 @@ namespace ResumeScrape
         static void Main(string[] args)
         {
             Console.WriteLine("Initiating Web Scrape");
+            IWebDriver driver = new ChromeDriver();
 
+            int numberOfSearchPages = 3;
+            List<string> SearchTerms = new List<string>();
 
+            foreach (string term in SearchTerms)
+            {
+                for(int i = 0; i < numberOfSearchPages; i++)
+                {
+                    driver.Navigate().GoToUrl("https://www.google.com");
+                }
+            }
+        }
+
+        private static string GetJobCaseSearchURL(string firstName, string lastName, int pageNum, string location = "")
+        {
+            return "https://www.jobcase.com/profiles/search?distance=&employer=&first_name=" + firstName +"&last_name=" + lastName + "&location=&page=" + pageNum.ToString() +"&position=&school=&utf8=%E2%9C%93";
         }
 
 
