@@ -15,11 +15,25 @@ namespace ResumeScrape
             int numberOfSearchPages = 3;
             List<string> SearchTerms = new List<string>();
 
-            foreach (string term in SearchTerms)
+            foreach (var term in SearchTerms)
             {
                 for(int i = 0; i < numberOfSearchPages; i++)
                 {
-                    driver.Navigate().GoToUrl("https://www.google.com");
+                    var TalentList = new List<Talent>();
+                    var UrlList = new List<string>();
+
+                    driver.Navigate().GoToUrl(GetJobCaseSearchURL("",term,i));
+
+                    //get all URLs
+
+
+                    //get page info for each URL
+                    foreach(var url in UrlList)
+                    {
+                        driver.Navigate().GoToUrl(url);
+
+
+                    }
                 }
             }
         }
