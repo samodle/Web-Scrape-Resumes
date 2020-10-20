@@ -45,8 +45,16 @@ namespace ResumeScrape
                         name = nameElem.Text;
                         try
                         {
-                            var locationElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[2]/div/div[2]"));
-                            location = locationElem.Text;
+                            try
+                            {
+                                var locationElem2 = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div[1]/div[1]/div/div/div[2]/div[2]/div[2]"));
+                                location = locationElem2.Text;
+                            }
+                            catch
+                            {
+                                var locationElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[2]/div/div[2]"));
+                                location = locationElem.Text;
+                            }
                         }
                         catch
                         {
@@ -70,13 +78,8 @@ namespace ResumeScrape
 
                         if (goodToGo)
                         {
-                            //driver.FindElement(By.ClassName("btn btn-link btn-block jc-link")).Click();
                             driver.FindElement(By.XPath("/html/body/div/div/div[4]/div/div[3]/button")).Click();
                             var profileItems = workExperienceElement.FindElements(By.ClassName("profile-item"));
-                            //var expandedElement = workExperienceElement.FindElement(By.ClassName("profile-section-expandable"));
-                            //var b = expandedElement.FindElements(By.ClassName("profile-item"));
-
-                            // var profileItems = (new ReadOnlyCollectionBuilder<IWebElement>(a.Concat(b))).ToReadOnlyCollection();
 
                             for (int n = 0; n < profileItems.Count; n++)
                             {
@@ -110,6 +113,9 @@ namespace ResumeScrape
 
                             //education history
                             TalentList.Add(t);
+                            Console.WriteLine(t.ToString());
+                            foreach (WorkExperience w in t.EmploymentHistory)
+                                Console.WriteLine(w.ToString());
                         }
 
                     }
@@ -120,48 +126,6 @@ namespace ResumeScrape
         private static string GetJobCaseSearchURL(string firstName, string lastName, int pageNum, string location = "")
         {
             return "https://www.jobcase.com/profiles/search?distance=&employer=&first_name=" + firstName + "&last_name=" + lastName + "&location=&page=" + pageNum.ToString() + "&position=&school=&utf8=%E2%9C%93";
-        }
-
-
-        static void old()
-        {
-            string alphabet = "abcdefghijklmnopqrstuvwxyz";
-
-            foreach (char c in alphabet)
-            {
-                //do something with letter
-            }
-
-
-            IWebDriver driver = new ChromeDriver();
-            driver.Navigate().GoToUrl("https://www.google.com");
-
-            // Using Name:
-            //var searchField = driver.FindElement(By.Name("q"));
-
-            // Using CSS Selector:
-            //var searchField = driver.FindElement(By.CssSelector(".gLFyf.gsfi"));
-
-            // Using XPATH:
-            var searchField = driver.FindElement(By.XPath("//*[@id=\"tsf\"]/div[2]/div[1]/div[1]/div/div[2]/input"));
-            searchField.SendKeys("Webshop");
-            searchField.Submit();
-
-            // Using XPATH:
-            //var titles = driver.FindElements(By.XPath("//*[@id=\"rso\"]/div/div/div/div"+
-            //                                          "/div/div[1]/a[1]/h3/div"));
-
-            //Using ClassName:
-            var titles = driver.FindElements(By.ClassName("LC20lb"));
-            var titleStrings = new List<string>();
-
-            foreach (var title in titles)
-                titleStrings.Add(title.Text);
-
-            foreach (var title in titleStrings)
-                Console.WriteLine(title);
-
-            //*[@id="tsf"]/div[2]/div[1]/div[1]/div/div[2]/input
         }
     }
 }

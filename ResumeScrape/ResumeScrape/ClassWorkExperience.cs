@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace ResumeScrape
 {
@@ -17,21 +18,18 @@ namespace ResumeScrape
                 var strings = dateLoc.Split("|");
 
                 var dateStrings = strings[0].Split("-");
-                StartDate = DateTime.Parse(dateStrings[0]);
-                if (!dateStrings[1].Contains("Present"))
-                    EndDate = DateTime.Parse(dateStrings[1]);
+                StartDate = dateStrings[0].Trim().GetDate();
+                EndDate = dateStrings[1].Trim().GetDate();
 
                 var locStrings = strings[1].Split(",");
                 State = locStrings[1].Trim();
                 City = locStrings[0].Trim();
-
             }
             else if (dateLoc.Contains("-")) //only date
             {
                 var dateStrings = dateLoc.Split("-");
-                StartDate = DateTime.Parse(dateStrings[0]);
-                if (!dateStrings[1].Contains("Present"))
-                    EndDate = DateTime.Parse(dateStrings[1]);
+                StartDate = dateStrings[0].Trim().GetDate();
+                EndDate = dateStrings[1].Trim().GetDate();
 
                 City = "";
                 State = "";
