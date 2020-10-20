@@ -18,5 +18,12 @@ namespace ResumeScrape
     class EducationExperience: Experience
     {
         public EducationLevel Level { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Level}: {Title}, {Organization}, {StartDate}-{EndDate}";
+        }
     }
+
+
 }

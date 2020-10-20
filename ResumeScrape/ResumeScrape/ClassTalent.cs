@@ -21,7 +21,7 @@ namespace ResumeScrape
             this.url = url;
 
             //location
-            if(location == "")
+            if(location == "" || !location.Contains(","))
             {
                 City = "";
                 State = "";
@@ -41,6 +41,11 @@ namespace ResumeScrape
             var firstSpaceIndex = name.IndexOf(" ");
             FirstName = name.Substring(0, firstSpaceIndex); 
             LastName = name.Substring(firstSpaceIndex + 1);
+        }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}: {City}, {State}. Jobs: {EmploymentHistory.Count}";
         }
 
     }
