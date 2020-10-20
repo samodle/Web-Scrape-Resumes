@@ -65,14 +65,14 @@ namespace ResumeScrape
                         bool goodToGo = true;
                         IWebElement workExperienceElement = null;
 
-                        //get work and education history
+                        //get work history
                         try
                         {
                             workExperienceElement = driver.FindElement(By.XPath("/html/body/div/div/div[4]/div"));
                         }
                         catch
                         {
-                            Console.WriteLine($"{name} has no work history");
+                            Console.WriteLine($"*** {name} has no work history");
                             goodToGo = false;
                         }
 
@@ -111,11 +111,59 @@ namespace ResumeScrape
                                     t.EmploymentHistory[n - 1].Next = title;
                             }
 
-                            //education history
+                            //education history - only if has work history
+                            try
+                            {
+                                workExperienceElement = driver.FindElement(By.XPath("/html/body/div/div/div[5]/div"));
+                            }
+                            catch
+                            {
+                                Console.WriteLine($"{name} has no education history");
+                                goodToGo = false;
+                            }
+
+                            if (goodToGo)
+                            {
+                                driver.FindElement(By.XPath("/html/body/div/div/div[5]/div/div[3]/button")).Click();
+                                profileItems = workExperienceElement.FindElements(By.ClassName("profile-item"));
+
+                                for (int n = 0; n < profileItems.Count; n++)
+                                {
+                                    string company, title, dateLocation, description;
+                                    var item = profileItems[n];
+
+                                    var companyElement = item.FindElement(By.ClassName("profile-item__primary-text"));
+                                    var titleElement = item.FindElement(By.ClassName("profile-item__secondary-text"));
+                                    var dateElement = item.FindElement(By.ClassName("profile-item__metadata"));
+
+
+                                    try
+                                    {
+                                        var descElement = item.FindElement(By.ClassName("profile-item__description"));
+                                        description = descElement.Text;
+                                    }
+                                    catch
+                                    {
+                                        description = "";
+                                    }
+
+                                    company = companyElement.Text;
+                                    title = titleElement.Text.Trim();
+
+                                    dateLocation = dateElement.Text;
+
+                                    t.EducationHistory.Add(new EducationExperience(title, company, dateLocation, description));
+                                }
+                            }
+
+
+                            //wrap it up
                             TalentList.Add(t);
                             Console.WriteLine(t.ToString());
                             foreach (WorkExperience w in t.EmploymentHistory)
-                                Console.WriteLine(w.ToString());
+                                Console.WriteLine("         " + w.ToString());
+                            foreach (EducationExperience w in t.EducationHistory)
+                                Console.WriteLine("         " + w.ToString());
                         }
 
                     }
