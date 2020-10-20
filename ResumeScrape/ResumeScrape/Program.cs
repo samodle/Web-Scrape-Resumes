@@ -117,8 +117,6 @@ namespace ResumeScrape
                             bool areThereTraits = false;
 
                             string traitTitleXPath = "/html/body/div/div/div[5]/div/div[1]/div/span";
-                            string parentElementXPath = areThereTraits ? "/html/body/div/div/div[6]/div" : "/html/body/div/div/div[5]/div";
-                            string buttonElementXPath = areThereTraits ? "/html/body/div/div/div[6]/div/div[3]/button" : "/html/body/div/div/div[5]/div/div[3]/button";
 
                             try
                             {
@@ -130,6 +128,9 @@ namespace ResumeScrape
                             {
                                 goodToGo = false;
                             }
+
+                            string parentElementXPath = areThereTraits ? "/html/body/div/div/div[6]/div" : "/html/body/div/div/div[5]/div";
+                            string buttonElementXPath = areThereTraits ? "/html/body/div/div/div[6]/div/div[3]/button" : "/html/body/div/div/div[5]/div/div[3]/button";
 
                             try
                             {

@@ -13,61 +13,14 @@ namespace ResumeScrape
         Certification = 4, //training resulting in certification
         Training = 5, // classes not resulting in certification
         Unknown = 6
-        
     }
 
     class EducationExperience: Experience
     {
-        public EducationExperience(string title, string company, string dateLoc, string desc)
+        public EducationLevel Level { get; set; }
+
+        public EducationExperience(string title, string company, string dateLoc, string desc): base(title, company, dateLoc, desc)
         {
-            Title = title;
-            Organization = company.Trim();
-            Description = desc.Trim();
-
-            if (dateLoc.Contains("|"))  //date and location
-            {
-                var strings = dateLoc.Split("|");
-
-                if (strings[0].Contains("-"))
-                {
-                    var dateStrings = strings[0].Split("-");
-                    StartDate = dateStrings[0].Trim().GetDate();
-                    EndDate = dateStrings[1].Trim().GetDate();
-                }
-                else //no start date, assume end date is 'present'
-                {
-                    EndDate = strings[0].Trim().GetDate();
-                }
-
-                var locStrings = strings[1].Split(",");
-                State = locStrings[1].Trim();
-                City = locStrings[0].Trim();
-            }
-            else if (dateLoc.Contains("-")) //only date
-            {
-                var dateStrings = dateLoc.Split("-");
-                StartDate = dateStrings[0].Trim().GetDate();
-                EndDate = dateStrings[1].Trim().GetDate();
-
-                City = "";
-                State = "";
-            }
-            else //only location
-            {
-                if (dateLoc.Length > 2)
-                {
-                    var locStrings = dateLoc.Split(",");
-                    State = locStrings[1].Trim();
-                    City = locStrings[0].Trim();
-                }
-                else
-                {
-                    City = "";
-                    State = "";
-                }
-
-            }
-
             //education level
             if (Title.Contains("High School") || Organization.Contains("High School"))
                 Level = EducationLevel.HighSchool;
@@ -79,10 +32,7 @@ namespace ResumeScrape
                 Level = EducationLevel.Certification;
             else
                 Level = EducationLevel.Unknown;
-
         }
-
-        public EducationLevel Level { get; set; }
 
         public override string ToString()
         {
