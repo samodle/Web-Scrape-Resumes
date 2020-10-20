@@ -112,19 +112,44 @@ namespace ResumeScrape
                             }
 
                             //education history - only if has work history
+                            // 
+
+                            bool areThereTraits = false;
+
+                            string traitTitleXPath = "/html/body/div/div/div[5]/div/div[1]/div/span";
+                            string parentElementXPath = areThereTraits ? "/html/body/div/div/div[6]/div" : "/html/body/div/div/div[5]/div";
+                            string buttonElementXPath = areThereTraits ? "/html/body/div/div/div[6]/div/div[3]/button" : "/html/body/div/div/div[5]/div/div[3]/button";
+
                             try
                             {
-                                workExperienceElement = driver.FindElement(By.XPath("/html/body/div/div/div[5]/div"));
+                                var tmpElement = driver.FindElement(By.XPath(traitTitleXPath));
+                                if (tmpElement.Text.Equals("Traits"))
+                                    areThereTraits = true;
                             }
                             catch
                             {
-                                Console.WriteLine($"{name} has no education history");
+                                goodToGo = false;
+                            }
+
+                            try
+                            {
+                                if(goodToGo)
+                                    workExperienceElement = driver.FindElement(By.XPath(parentElementXPath));
+                            }
+                            catch
+                            {
+                                Console.WriteLine($"{name} no education history");
                                 goodToGo = false;
                             }
 
                             if (goodToGo)
                             {
-                                driver.FindElement(By.XPath("/html/body/div/div/div[5]/div/div[3]/button")).Click();
+                                try
+                                {
+                                    driver.FindElement(By.XPath(buttonElementXPath)).Click();
+                                }     
+                                catch { Console.WriteLine("      No Education Button"); }
+
                                 profileItems = workExperienceElement.FindElements(By.ClassName("profile-item"));
 
                                 for (int n = 0; n < profileItems.Count; n++)

@@ -53,7 +53,7 @@ namespace ResumeScrape
 
         public override string ToString()
         {
-            return $"{Title}, {Organization}, {StartDate}-{EndDate}";
+            return $"{Title}, {Organization}, {State}, {StartDate.ToLongDateString()}-{EndDate.ToLongDateString()}";
         }
     }
 }

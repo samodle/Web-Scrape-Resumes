@@ -18,9 +18,6 @@ namespace ResumeScrape
 
     class EducationExperience: Experience
     {
-        private string company;
-        private string dateLocation;
-
         public EducationExperience(string title, string company, string dateLoc, string desc)
         {
             Title = title;
@@ -31,9 +28,16 @@ namespace ResumeScrape
             {
                 var strings = dateLoc.Split("|");
 
-                var dateStrings = strings[0].Split("-");
-                StartDate = dateStrings[0].Trim().GetDate();
-                EndDate = dateStrings[1].Trim().GetDate();
+                if (strings[0].Contains("-"))
+                {
+                    var dateStrings = strings[0].Split("-");
+                    StartDate = dateStrings[0].Trim().GetDate();
+                    EndDate = dateStrings[1].Trim().GetDate();
+                }
+                else //no start date, assume end date is 'present'
+                {
+                    EndDate = strings[0].Trim().GetDate();
+                }
 
                 var locStrings = strings[1].Split(",");
                 State = locStrings[1].Trim();
@@ -65,14 +69,16 @@ namespace ResumeScrape
             }
 
             //education level
-            if(Title.Contains("High School") || Organization.Contains("High School"))
-            {
+            if (Title.Contains("High School") || Organization.Contains("High School"))
                 Level = EducationLevel.HighSchool;
-            }
+            else if (Title.Contains("Bachelor") || Organization.Contains("Bachelor"))
+                Level = EducationLevel.BachelorsDegree;
+            else if (Title.Contains("Associate") || Organization.Contains("Associate"))
+                Level = EducationLevel.AssociateDegree;
+            else if (Title.Contains("License") || Organization.Contains("License"))
+                Level = EducationLevel.Certification;
             else
-            {
                 Level = EducationLevel.Unknown;
-            }
 
         }
 
@@ -80,7 +86,7 @@ namespace ResumeScrape
 
         public override string ToString()
         {
-            return $"{Level}: {Title}, {Organization}, {StartDate}-{EndDate}";
+            return $"{Level}: {Title}, {Organization}, {State}, {StartDate.ToLongDateString()}-{EndDate.ToLongDateString()}";
         }
     }
 
