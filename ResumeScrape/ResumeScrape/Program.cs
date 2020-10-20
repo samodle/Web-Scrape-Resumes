@@ -13,11 +13,11 @@ namespace ResumeScrape
             IWebDriver driver = new ChromeDriver();
 
             int numberOfSearchPages = 3;
-            List<string> SearchTerms = new List<string>();
+            List<string> SearchTerms = new List<string> { "a", "b", "c"};
 
             foreach (var term in SearchTerms)
             {
-                for(int i = 0; i < numberOfSearchPages; i++)
+                for(int i = 1; i <= numberOfSearchPages; i++)
                 {
                     var TalentList = new List<Talent>();
                     var UrlList = new List<string>();
@@ -25,14 +25,34 @@ namespace ResumeScrape
                     driver.Navigate().GoToUrl(GetJobCaseSearchURL("",term,i));
 
                     //get all URLs
+                    //var profileElements = driver.FindElements(By.ClassName("list-cell__info"));
+                    var profileElements = driver.FindElements(By.ClassName("jc-link"));
+                    foreach (var x in profileElements)
+                    {
+                       if(x.GetAttribute("href") != null)
+                        UrlList.Add(x.GetAttribute("href"));
+                    }
 
+                    var profileNameElements = driver.FindElements(By.XPath("/html/body/div/div[2]/div[2]/div[1]/div[1]/div[2]/a"));
 
                     //get page info for each URL
                     foreach(var url in UrlList)
                     {
                         driver.Navigate().GoToUrl(url);
+                        string name, location;
+                        var nameElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div"));
+                        name = nameElem.Text;
+                        try
+                        {
+                            var locationElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[2]/div/div[2]"));
+                            location = locationElem.Text;
+                        }
+                        catch
+                        {
+                            location = "";
+                        }
 
-
+                        TalentList.Add(new Talent(name, location, url));
                     }
                 }
             }
@@ -46,6 +66,14 @@ namespace ResumeScrape
 
         static void old()
         {
+            string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+            foreach (char c in alphabet)
+            {
+                //do something with letter
+            }
+
+
             IWebDriver driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.google.com");
 
