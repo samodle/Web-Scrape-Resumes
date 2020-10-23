@@ -35,9 +35,25 @@ namespace ResumeScrape
                     EndDate = strings[0].Trim().GetDate();
                 }
 
-                var locStrings = strings[1].Split(",");
-                State = locStrings[1].Trim();
-                City = locStrings[0].Trim();
+                if (strings[1].Contains(","))
+                {
+                    var locStrings = strings[1].Split(",");
+                    State = locStrings[1].Trim();
+                    City = locStrings[0].Trim();
+                }
+                else
+                {
+                    if (strings[1].Trim().Length == 2)
+                    {
+                        City = "";
+                        State = strings[1];
+                    }
+                    else
+                    {
+                        City = strings[1];
+                        State = "";
+                    }
+                }
             }
             else if (dateLoc.Contains("-")) //only date
             {
@@ -58,9 +74,25 @@ namespace ResumeScrape
                     }
                     else
                     {
-                        var locStrings = dateLoc.Split(",");
-                        State = locStrings[1].Trim();
-                        City = locStrings[0].Trim();
+                        if (dateLoc.Contains(","))
+                        {
+                            var locStrings = dateLoc.Split(",");
+                            State = locStrings[1].Trim();
+                            City = locStrings[0].Trim();
+                        }
+                        else
+                        {
+                            if(dateLoc.Trim().Length == 2)
+                            {
+                                City = "";
+                                State = dateLoc;
+                            }
+                            else
+                            {
+                                City = dateLoc;
+                                State = "";
+                            }
+                        }
                     }
                 }
                 else

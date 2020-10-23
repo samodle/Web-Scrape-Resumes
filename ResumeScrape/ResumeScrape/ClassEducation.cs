@@ -22,7 +22,7 @@ namespace ResumeScrape
         public EducationExperience(string title, string company, string dateLoc, string desc): base(title, company, dateLoc, desc)
         {
             //education level
-            if (Title.Contains("High School") || Organization.Contains("High School"))
+            if (Title.Contains("High School") || Organization.Contains("High School") || Title.Contains("GED") || Organization.Contains("GED"))
                 Level = EducationLevel.HighSchool;
             else if (Title.Contains("Bachelor") || Organization.Contains("Bachelor"))
                 Level = EducationLevel.BachelorsDegree;

@@ -7,6 +7,12 @@ namespace ResumeScrape
 {
     public static class MyExtensions
     {
+        /// <summary>
+        /// Returns Date Representation Of String.
+        /// Returns "Now" for "Present", returns MinValue if unknown
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static DateTime GetDate(this String str)
         {
             if (str.Length == 4)
@@ -15,13 +21,18 @@ namespace ResumeScrape
                 if (DateTime.TryParseExact(str, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
                     return dt;
                 else
-                    Console.WriteLine("DATE ERROR!!!! " + str);
-                return DateTime.Now;
+                    return DateTime.MinValue;
             }
             else
             {
                 if (!str.Contains("Present"))
-                    return DateTime.Parse(str);
+                {
+                    try
+                    {
+                        return DateTime.Parse(str);
+                    }
+                    catch { return DateTime.MinValue; }
+                }
                 else
                     return DateTime.Now;
             }

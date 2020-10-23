@@ -14,8 +14,8 @@ namespace ResumeScrape
             Console.WriteLine("Initiating Web Scrape");
             IWebDriver driver = new ChromeDriver();
 
-            int numberOfSearchPages = 3;
-            List<string> SearchTerms = new List<string> { "b", "c" };
+            int numberOfSearchPages = 4;
+            List<string> SearchTerms = new List<string> { "c", "d", "e", "f" };
 
             foreach (var term in SearchTerms)
             {
@@ -78,9 +78,15 @@ namespace ResumeScrape
 
                         if (goodToGo)
                         {
-                            driver.FindElement(By.XPath("/html/body/div/div/div[4]/div/div[3]/button")).Click();
+                            try
+                            {
+                                driver.FindElement(By.XPath("/html/body/div/div/div[4]/div/div[3]/button")).Click();
+                            }
+                            catch { /*Console.WriteLine("      No Education Button");*/ }
+                        
                             var profileItems = workExperienceElement.FindElements(By.ClassName("profile-item"));
 
+                            int blankElementCounter = 0;
                             for (int n = 0; n < profileItems.Count; n++)
                             {
                                 string company, title, dateLocation, description;
@@ -90,30 +96,32 @@ namespace ResumeScrape
                                 var titleElement = item.FindElement(By.ClassName("profile-item__secondary-text"));
                                 var dateElement = item.FindElement(By.ClassName("profile-item__metadata"));
 
-
-                                try
-                                {
-                                    var descElement = item.FindElement(By.ClassName("profile-item__description"));
-                                    description = descElement.Text;
-                                }
-                                catch
-                                {
-                                    description = "";
-                                }
-
                                 company = companyElement.Text;
                                 title = titleElement.Text.Trim();
 
-                                dateLocation = dateElement.Text;
+                                if(company.Length > 1 || title.Length > 1)
+                                {
+                                    try
+                                    {
+                                        var descElement = item.FindElement(By.ClassName("profile-item__description"));
+                                        description = descElement.Text;
+                                    }
+                                    catch
+                                    {
+                                        description = "";
+                                    }
 
-                                t.EmploymentHistory.Add(new WorkExperience(title, company, dateLocation, description));
-                                if (n > 0)
-                                    t.EmploymentHistory[n - 1].Next = title;
+                                    dateLocation = dateElement.Text;
+
+                                    t.EmploymentHistory.Add(new WorkExperience(title, company, dateLocation, description));
+                                    if (n > 0 && t.EmploymentHistory.Count > 1)
+                                        t.EmploymentHistory[t.EmploymentHistory.Count - 1].Next = t.EmploymentHistory[t.EmploymentHistory.Count - 2].Title;
+                                }
+                               else
+                                    blankElementCounter++;
                             }
 
                             //education history - only if has work history
-                            // 
-
                             bool areThereTraits = false;
 
                             string traitTitleXPath = "/html/body/div/div/div[5]/div/div[1]/div/span";
@@ -149,7 +157,7 @@ namespace ResumeScrape
                                 {
                                     driver.FindElement(By.XPath(buttonElementXPath)).Click();
                                 }     
-                                catch { Console.WriteLine("      No Education Button"); }
+                                catch { /*Console.WriteLine("      No Education Button");*/ }
 
                                 profileItems = workExperienceElement.FindElements(By.ClassName("profile-item"));
 

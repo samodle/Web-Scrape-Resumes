@@ -34,7 +34,11 @@ namespace ResumeScrape
 
                 var stateString = strings[1].Trim().Split(" ");
                 State = stateString[0].Trim();
-                ZipCode = Convert.ToInt32(stateString[1].Trim());
+
+                if(stateString.Length > 1 && stateString[1].Length > 1)
+                    ZipCode = Convert.ToInt32(stateString[1].Trim());
+                else
+                    ZipCode = -1;
             }
 
             //name
