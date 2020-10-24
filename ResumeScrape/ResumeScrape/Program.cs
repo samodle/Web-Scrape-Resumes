@@ -1,4 +1,7 @@
-﻿using OpenQA.Selenium;
+﻿using Oden;
+using Oden.Enums;
+using Oden.Talent;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -7,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace ResumeScrape
 {
-    class Program
+    static partial class Program
     {
         static void Main(string[] args)
         {
@@ -61,7 +64,7 @@ namespace ResumeScrape
                             location = "";
                         }
 
-                        var t = new Talent(name, location, url);
+                        var t = getTalent(name, location, url);
                         bool goodToGo = true;
                         IWebElement workExperienceElement = null;
 
@@ -113,7 +116,7 @@ namespace ResumeScrape
 
                                     dateLocation = dateElement.Text;
 
-                                    t.EmploymentHistory.Add(new WorkExperience(title, company, dateLocation, description));
+                                    t.EmploymentHistory.Add(getWorkExperience(title, company, dateLocation, description));
                                     if (n > 0 && t.EmploymentHistory.Count > 1)
                                         t.EmploymentHistory[t.EmploymentHistory.Count - 1].Next = t.EmploymentHistory[t.EmploymentHistory.Count - 2].Title;
                                 }
@@ -186,7 +189,7 @@ namespace ResumeScrape
 
                                     dateLocation = dateElement.Text;
 
-                                    t.EducationHistory.Add(new EducationExperience(title, company, dateLocation, description));
+                                    t.EducationHistory.Add(getEducationExperience(title, company, dateLocation, description));
                                 }
                             }
 
@@ -205,9 +208,5 @@ namespace ResumeScrape
             }
         }
 
-        private static string GetJobCaseSearchURL(string firstName, string lastName, int pageNum, string location = "")
-        {
-            return "https://www.jobcase.com/profiles/search?distance=&employer=&first_name=" + firstName + "&last_name=" + lastName + "&location=&page=" + pageNum.ToString() + "&position=&school=&utf8=%E2%9C%93";
-        }
     }
 }
