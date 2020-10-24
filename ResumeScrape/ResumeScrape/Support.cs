@@ -1,4 +1,6 @@
-﻿using Oden;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using Oden;
 using Oden.Enums;
 using Oden.Talent;
 using System;
@@ -9,6 +11,28 @@ namespace ResumeScrape
 {
     static partial class Program
     {
+        public static void printTimeStatus(TimeSpan ts, string messageA = "Time Elapsed: ", string messageB = "")
+        {
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+
+            Console.WriteLine($"{messageA} {elapsedTime} {messageB}");
+        }
+
+        private static void ExportResumes(List<Talent> exportList)
+        {
+            MongoClient dbClient = new MongoClient(Oden.Mongo.Connection.LOCAL);
+            IMongoDatabase database = dbClient.GetDatabase(Oden.Mongo.DB.TALENT);
+            var resume_collection = database.GetCollection<BsonDocument>(Oden.Mongo.Collection.RESUME);
+
+            var EmpInfoArray = new List<BsonDocument>();
+            foreach (Talent t in exportList)
+                EmpInfoArray.Add(t.ToBsonDocument());
+            resume_collection.InsertMany(EmpInfoArray);
+
+        }
 
         private static EducationExperience getEducationExperience(string title, string company, string dateLoc, string desc)
         {
