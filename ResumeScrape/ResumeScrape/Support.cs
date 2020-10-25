@@ -11,6 +11,8 @@ namespace ResumeScrape
 {
     static partial class Program
     {
+        private const int ZIP_CODE_UNKNOWN = -1;
+
         public static void printTimeStatus(TimeSpan ts, string messageA = "Time Elapsed: ", string messageB = "")
         {
             // Format and display the TimeSpan value.
@@ -176,7 +178,7 @@ namespace ResumeScrape
             {
                 city = "";
                 state = "";
-                zip = -1;
+                zip = ZIP_CODE_UNKNOWN;
             }
             else
             {
@@ -187,9 +189,17 @@ namespace ResumeScrape
                 state = stateString[0].Trim();
 
                 if (stateString.Length > 1 && stateString[1].Length > 1)
-                    zip = Convert.ToInt32(stateString[1].Trim());
+                    try
+                    {
+                        zip = Convert.ToInt32(stateString[1].Trim());
+                    }
+                    catch
+                    {
+                        zip = ZIP_CODE_UNKNOWN;
+                    }
+                    
                 else
-                    zip = -1;
+                    zip = ZIP_CODE_UNKNOWN;
             }
 
             //name

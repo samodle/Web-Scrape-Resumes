@@ -17,6 +17,7 @@ namespace ResumeScrape
             IWebDriver driver = new ChromeDriver();
 
             int numberOfSearchPages = 1000;
+            int skipSearchTerms = 4;
             List<string> SearchTerms = new List<string>();// { "c", "dxxxxxx", "e", "f" };
 
             const string alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -28,6 +29,9 @@ namespace ResumeScrape
             foreach (char c in alphabet)
                 foreach(char d in alphabet)
                     SearchTerms.Add(c.ToString() + d.ToString());
+
+            if(skipSearchTerms > 0)
+                    SearchTerms.RemoveRange(0, skipSearchTerms);
 
             foreach (var term in SearchTerms)
             {
@@ -58,7 +62,7 @@ namespace ResumeScrape
                                 UrlList.Add(x.GetAttribute("href"));
                         }
 
-                        var profileNameElements = driver.FindElements(By.XPath("/html/body/div/div[2]/div[2]/div[1]/div[1]/div[2]/a"));
+                        //var profileNameElements = driver.FindElements(By.XPath("/html/body/div/div[2]/div[2]/div[1]/div[1]/div[2]/a"));
 
                         //get page info for each URL
                         foreach (var url in UrlList)
@@ -113,12 +117,14 @@ namespace ResumeScrape
                                 int blankElementCounter = 0;
                                 for (int n = 0; n < profileItems.Count; n++)
                                 {
-                                    string company, title = "", dateLocation, description;
+                                    string company = "", title = "", dateLocation, description;
                                     var item = profileItems[n];
-
-                                    var companyElement = item.FindElement(By.ClassName("profile-item__primary-text"));
+          
                                     try
                                     {
+                                        var companyElement = item.FindElement(By.ClassName("profile-item__primary-text"));
+                                        company = companyElement.Text;
+
                                         var titleElement = item.FindElement(By.ClassName("profile-item__secondary-text"));
                                         title = titleElement.Text.Trim();
                                     }
@@ -129,11 +135,6 @@ namespace ResumeScrape
 
                                     if (goodToGo)
                                     {
-                                        var dateElement = item.FindElement(By.ClassName("profile-item__metadata"));
-
-                                        company = companyElement.Text;
-
-
                                         if (company.Length > 1 || title.Length > 1)
                                         {
                                             try
@@ -146,7 +147,16 @@ namespace ResumeScrape
                                                 description = "";
                                             }
 
-                                            dateLocation = dateElement.Text;
+                                            try
+                                            {
+                                                var dateElement = item.FindElement(By.ClassName("profile-item__metadata"));
+                                                dateLocation = dateElement.Text;
+                                            }
+                                            catch
+                                            {
+                                                dateLocation = "";
+                                            }
+
 
                                             t.EmploymentHistory.Add(getWorkExperience(title, company, dateLocation, description));
                                             if (n > 0 && t.EmploymentHistory.Count > 1)
