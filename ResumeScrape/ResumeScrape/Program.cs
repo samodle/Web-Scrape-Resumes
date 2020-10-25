@@ -8,31 +8,37 @@ namespace ResumeScrape
 {
     static partial class Program
     {
+        private enum SearchMode
+        {
+            alphabetical,
+            firstnames,
+            custom
+        }
+
         static void Main(string[] args)
         {
+            var ActiveSearchMode = SearchMode.firstnames;
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
-            Console.WriteLine("Initiating Web Scrape");
             IWebDriver driver = new ChromeDriver();
 
-            int numberOfSearchPages = 1000;
-            int skipSearchTerms = 4;
-            List<string> SearchTerms = new List<string>();// { "c", "dxxxxxx", "e", "f" };
+            int numberOfSearchPages = 1000, termCount = 1, timeoutCounter = 0;
+            List<string> SearchTerms;
 
-            const string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            int termCount = 1;
-
-            foreach (char d in alphabet)
-                SearchTerms.Add(d.ToString());
-
-            foreach (char c in alphabet)
-                foreach(char d in alphabet)
-                    SearchTerms.Add(c.ToString() + d.ToString());
-
-            if(skipSearchTerms > 0)
-                    SearchTerms.RemoveRange(0, skipSearchTerms);
-
+            switch (ActiveSearchMode)
+            {
+                case SearchMode.alphabetical:
+                    SearchTerms = GetSearchTerms_Alphabet(skipSearchTerms: 17);
+                    break;
+                case SearchMode.firstnames:
+                    SearchTerms = GetSearchTerms_FirstName(skipSearchTerms: 0);
+                    break;
+                default:
+                    SearchTerms = new List<string> { "a", "b"};
+                    break;
+            }
+                
             foreach (var term in SearchTerms)
             {
                 Console.WriteLine("***");
@@ -43,9 +49,27 @@ namespace ResumeScrape
                 {
                     printTimeStatus(watch.Elapsed, $"Page {i}:");
                     driver.Navigate().GoToUrl(GetJobCaseSearchURL("", term, i));
+                    var validityText = "No Results";
 
-                    var validityCheckElement = driver.FindElement(By.XPath("/html/body/div/div[2]/div[2]/div/div"));
-                    var validityText = validityCheckElement.Text;
+                    try
+                    {
+                        var validityCheckElement = driver.FindElement(By.XPath("/html/body/div/div[2]/div[2]/div/div"));
+                        validityText = validityCheckElement.Text;
+                    }
+
+                    catch
+                    {
+                        printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
+                        printTimeStatus(watch.Elapsed, "Timout at: ");
+
+                        System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+                        printTimeStatus(watch.Elapsed, $"Page {i}:");
+                        driver.Navigate().GoToUrl(GetJobCaseSearchURL("", term, i));
+                        var validityCheckElement = driver.FindElement(By.XPath("/html/body/div/div[2]/div[2]/div/div"));
+                        validityText = validityCheckElement.Text;
+                        timeoutCounter++;
+                    }
 
                     if (validityText.Contains("No Results"))
                         i = numberOfSearchPages + 1;
@@ -62,15 +86,29 @@ namespace ResumeScrape
                                 UrlList.Add(x.GetAttribute("href"));
                         }
 
-                        //var profileNameElements = driver.FindElements(By.XPath("/html/body/div/div[2]/div[2]/div[1]/div[1]/div[2]/a"));
-
                         //get page info for each URL
                         foreach (var url in UrlList)
                         {
+                            bool goodToGo = true;
                             driver.Navigate().GoToUrl(url);
-                            string name, location;
-                            var nameElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div"));
-                            name = nameElem.Text;
+                            string name = "", location;
+                            try
+                            {
+                                var nameElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div"));
+                                name = nameElem.Text;
+                            }
+                            catch
+                            {
+                                printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
+                                printTimeStatus(watch.Elapsed, "Timout at: ");
+                                goodToGo = false;
+                                System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+                                var nameElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div"));
+                                name = nameElem.Text;
+                                timeoutCounter++;
+                            }
+
+
                             try
                             {
                                 try
@@ -90,7 +128,6 @@ namespace ResumeScrape
                             }
 
                             var t = getTalent(name, location, url);
-                            bool goodToGo = true;
                             IWebElement workExperienceElement = null;
 
                             //get work history
@@ -100,7 +137,7 @@ namespace ResumeScrape
                             }
                             catch
                             {
-                              //  Console.WriteLine($"*** {name} has no work history");
+                                //  Console.WriteLine($"*** {name} has no work history");
                                 goodToGo = false;
                             }
 
@@ -119,7 +156,7 @@ namespace ResumeScrape
                                 {
                                     string company = "", title = "", dateLocation, description;
                                     var item = profileItems[n];
-          
+
                                     try
                                     {
                                         var companyElement = item.FindElement(By.ClassName("profile-item__primary-text"));
@@ -194,7 +231,7 @@ namespace ResumeScrape
                                 }
                                 catch
                                 {
-                                   // Console.WriteLine($"{name} no education history");
+                                    // Console.WriteLine($"{name} no education history");
                                     goodToGo = false;
                                 }
 

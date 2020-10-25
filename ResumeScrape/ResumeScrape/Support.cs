@@ -5,6 +5,7 @@ using Oden.Enums;
 using Oden.Talent;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ResumeScrape
@@ -12,6 +13,17 @@ namespace ResumeScrape
     static partial class Program
     {
         private const int ZIP_CODE_UNKNOWN = -1;
+
+        public static void printEmphStatus(string message, int rowsOfAlert = 2, string alertText = "*")
+        {
+            for (int i = 0; i < rowsOfAlert; i++)
+                Console.WriteLine(alertText);
+
+            Console.WriteLine(message);
+
+            for (int i = 0; i < rowsOfAlert; i++)
+                Console.WriteLine(alertText);
+        }
 
         public static void printTimeStatus(TimeSpan ts, string messageA = "Time Elapsed: ", string messageB = "")
         {
