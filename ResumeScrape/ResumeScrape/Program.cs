@@ -17,7 +17,7 @@ namespace ResumeScrape
 
         static void Main(string[] args)
         {
-            var ActiveSearchMode = SearchMode.firstnames;
+            var ActiveSearchMode = SearchMode.alphabetical;
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
@@ -29,7 +29,7 @@ namespace ResumeScrape
             switch (ActiveSearchMode)
             {
                 case SearchMode.alphabetical:
-                    SearchTerms = GetSearchTerms_Alphabet(skipSearchTerms: 17);
+                    SearchTerms = GetSearchTerms_Alphabet(skipSearchTerms: 19);
                     break;
                 case SearchMode.firstnames:
                     SearchTerms = GetSearchTerms_FirstName(skipSearchTerms: 0);
@@ -102,7 +102,8 @@ namespace ResumeScrape
                                 printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
                                 printTimeStatus(watch.Elapsed, "Timout at: ");
                                 goodToGo = false;
-                                System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+                                System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2 + timeoutCounter));
+                                driver.Navigate().GoToUrl(url);
                                 var nameElem = driver.FindElement(By.XPath("/html/body/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div"));
                                 name = nameElem.Text;
                                 timeoutCounter++;

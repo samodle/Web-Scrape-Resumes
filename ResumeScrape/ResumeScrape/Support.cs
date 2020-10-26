@@ -216,8 +216,17 @@ namespace ResumeScrape
 
             //name
             var firstSpaceIndex = name.IndexOf(" ");
-            firstName = name.Substring(0, firstSpaceIndex);
-            lastName = name.Substring(firstSpaceIndex + 1);
+            if(firstSpaceIndex >= 0)
+            {
+                firstName = name.Substring(0, firstSpaceIndex);
+                lastName = name.Substring(firstSpaceIndex + 1);
+            }
+            else
+            {
+                firstName = name;
+                lastName = name;
+            }
+
 
             return new Talent
             {
