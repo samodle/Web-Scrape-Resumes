@@ -25,6 +25,7 @@ namespace ResumeScrape
 
             int numberOfSearchPages = 1000, termCount = 1, timeoutCounter = 0;
             List<string> SearchTerms;
+            const bool SlowMode = true;
 
             switch (ActiveSearchMode)
             {
@@ -90,6 +91,8 @@ namespace ResumeScrape
                         foreach (var url in UrlList)
                         {
                             bool goodToGo = true;
+                            if (SlowMode)
+                                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(2));
                             driver.Navigate().GoToUrl(url);
                             string name = "", location;
                             try
@@ -280,15 +283,8 @@ namespace ResumeScrape
                                     }
                                 }
 
-
-                                //wrap it up
                                 TalentList.Add(t);
                                 Console.Write(t.ToString() + " | ");
-                                /*
-                                foreach (WorkExperience w in t.EmploymentHistory)
-                                    Console.WriteLine("         " + w.ToString());
-                                foreach (EducationExperience w in t.EducationHistory)
-                                    Console.WriteLine("         " + w.ToString()); */
                             }
 
                         }
