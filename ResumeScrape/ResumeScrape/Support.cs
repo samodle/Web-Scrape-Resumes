@@ -14,27 +14,6 @@ namespace ResumeScrape
     {
         private const int ZIP_CODE_UNKNOWN = -1;
 
-        public static void printEmphStatus(string message, int rowsOfAlert = 2, string alertText = "*")
-        {
-            for (int i = 0; i < rowsOfAlert; i++)
-                Console.WriteLine(alertText);
-
-            Console.WriteLine(message);
-
-            for (int i = 0; i < rowsOfAlert; i++)
-                Console.WriteLine(alertText);
-        }
-
-        public static void printTimeStatus(TimeSpan ts, string messageA = "Time Elapsed: ", string messageB = "")
-        {
-            // Format and display the TimeSpan value.
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-            ts.Hours, ts.Minutes, ts.Seconds,
-            ts.Milliseconds / 10);
-
-            Console.WriteLine($"{messageA} {elapsedTime} {messageB}");
-        }
-
         private static void ExportResumes(List<Talent> exportList)
         {
             MongoClient dbClient = new MongoClient(Oden.Mongo.Connection.LOCAL);
@@ -223,7 +202,7 @@ namespace ResumeScrape
             }
             else
             {
-                firstName = name;
+                firstName = "";
                 lastName = name;
             }
 

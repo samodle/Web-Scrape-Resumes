@@ -1,10 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using Oden.Mongo;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ResumeScrape
 {
