@@ -18,7 +18,7 @@ namespace ResumeScrape
 
         static void Main(string[] args)
         {
-            ProgramMode activeMode = ProgramMode.RemoveDuplicates;
+            ProgramMode activeMode = ProgramMode.ScrapeNewData;
 
             switch (activeMode)
             {

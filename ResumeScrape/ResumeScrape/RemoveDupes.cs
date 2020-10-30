@@ -17,8 +17,8 @@ namespace ResumeScrape
             watch.Start();
 
             MongoClient dbClient = new MongoClient(Connection.LOCAL);
-            IMongoDatabase database = dbClient.GetDatabase(DB.JOB);
-            var raw_collection = database.GetCollection<BsonDocument>(Collection.JOB);
+            IMongoDatabase database = dbClient.GetDatabase(DB.TALENT);
+            var raw_collection = database.GetCollection<BsonDocument>(Collection.RESUME);
 
             const string UniqueFieldToQuery = "FirstName";
 

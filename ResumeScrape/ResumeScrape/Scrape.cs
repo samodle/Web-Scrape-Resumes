@@ -12,6 +12,7 @@ namespace ResumeScrape
         {
             alphabetical,
             firstnames,
+            lastnames,
             custom
         }
 
@@ -30,9 +31,12 @@ namespace ResumeScrape
             switch (ActiveSearchMode)
             {
                 case SearchMode.alphabetical:
-                    SearchTerms = GetSearchTerms_Alphabet(skipSearchTerms: 19);
+                    SearchTerms = GetSearchTerms_Alphabet(skipSearchTerms: 0);
                     break;
                 case SearchMode.firstnames:
+                    SearchTerms = GetSearchTerms_FirstName(skipSearchTerms: 0);
+                    break;
+                case SearchMode.lastnames:
                     SearchTerms = GetSearchTerms_FirstName(skipSearchTerms: 0);
                     break;
                 default:
@@ -49,7 +53,7 @@ namespace ResumeScrape
                 for (int i = 1; i <= numberOfSearchPages; i++)
                 {
                     Oden.ConsoleIO.printTimeStatus(watch.Elapsed, $"Page {i}:");
-                    driver.Navigate().GoToUrl(GetJobCaseSearchURL("", term, i));
+                    driver.Navigate().GoToUrl(GetJobCaseSearchURL(term, "", i));
                     var validityText = "No Results";
 
                     try
@@ -66,7 +70,7 @@ namespace ResumeScrape
                         System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
                         Oden.ConsoleIO.printTimeStatus(watch.Elapsed, $"Page {i}:");
-                        driver.Navigate().GoToUrl(GetJobCaseSearchURL("", term, i));
+                        driver.Navigate().GoToUrl(GetJobCaseSearchURL(term, "", i));
                         var validityCheckElement = driver.FindElement(By.XPath("/html/body/div/div[2]/div[2]/div/div"));
                         validityText = validityCheckElement.Text;
                         timeoutCounter++;
