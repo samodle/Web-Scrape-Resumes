@@ -18,6 +18,9 @@ namespace ResumeScrape
 
         static void RunScrapeMain()
         {
+            Console.WriteLine("GoinG to SleeP Now");
+            System.Threading.Thread.Sleep(TimeSpan.FromHours(3));
+
             var ActiveSearchMode = SearchMode.firstnames;
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
