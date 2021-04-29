@@ -1,14 +1,31 @@
-﻿using Oden;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using Oden;
 using Oden.Enums;
 using Oden.Talent;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ResumeScrape
 {
     static partial class Program
     {
+        private const int ZIP_CODE_UNKNOWN = -1;
+
+        private static void ExportResumes(List<Talent> exportList)
+        {
+            MongoClient dbClient = new MongoClient(Oden.Mongo.Connection.LOCAL);
+            IMongoDatabase database = dbClient.GetDatabase(Oden.Mongo.DB.TALENT);
+            var resume_collection = database.GetCollection<BsonDocument>(Oden.Mongo.Collection.RESUME);
+
+            var EmpInfoArray = new List<BsonDocument>();
+            foreach (Talent t in exportList)
+                EmpInfoArray.Add(t.ToBsonDocument());
+            resume_collection.InsertMany(EmpInfoArray);
+
+        }
 
         private static EducationExperience getEducationExperience(string title, string company, string dateLoc, string desc)
         {
@@ -152,7 +169,7 @@ namespace ResumeScrape
             {
                 city = "";
                 state = "";
-                zip = -1;
+                zip = ZIP_CODE_UNKNOWN;
             }
             else
             {
@@ -163,15 +180,32 @@ namespace ResumeScrape
                 state = stateString[0].Trim();
 
                 if (stateString.Length > 1 && stateString[1].Length > 1)
-                    zip = Convert.ToInt32(stateString[1].Trim());
+                    try
+                    {
+                        zip = Convert.ToInt32(stateString[1].Trim());
+                    }
+                    catch
+                    {
+                        zip = ZIP_CODE_UNKNOWN;
+                    }
+                    
                 else
-                    zip = -1;
+                    zip = ZIP_CODE_UNKNOWN;
             }
 
             //name
             var firstSpaceIndex = name.IndexOf(" ");
-            firstName = name.Substring(0, firstSpaceIndex);
-            lastName = name.Substring(firstSpaceIndex + 1);
+            if(firstSpaceIndex >= 0)
+            {
+                firstName = name.Substring(0, firstSpaceIndex);
+                lastName = name.Substring(firstSpaceIndex + 1);
+            }
+            else
+            {
+                firstName = "";
+                lastName = name;
+            }
+
 
             return new Talent
             {
