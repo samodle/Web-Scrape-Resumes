@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using Oden.Mongo;
-using Oden.Talent;
+using ShackletonJobData.Mongo;
+using ShackletonJobData.Talent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace ResumeScrape
             int complete_counter = 0;
             int delete_counter = 0;
 
-            Oden.ConsoleIO.printTimeStatus(watch.Elapsed, "Setup Complete: ");
+            ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, "Setup Complete: ");
 
             foreach (string firstName in unique_names)
             {
@@ -53,8 +53,10 @@ namespace ResumeScrape
                             if (rawTalent[i].Url.Equals(rawTalent[j].Url))
                             {
                                 // if i is newer/more recent, delete j so swap the items
-                                if (DateTime.Compare(rawTalent[i].ID.CreationTime, rawTalent[j].ID.CreationTime) > 0)
+                                //TEMP    if (DateTime.Compare(rawTalent[i].ID.CreationTime, rawTalent[j].ID.CreationTime) > 0)
+                                if(true)
                                 {
+                                    throw (new NotImplementedException());
                                     Console.WriteLine($"Swap {rawTalent[i].ToString()} // and // {rawTalent[j].ToString()}");
                                     //swap the two JDs
                                     var tmp = rawTalent[i];
@@ -63,7 +65,8 @@ namespace ResumeScrape
                                 }
 
                                 // delete the first one
-                                jdsToDelete.Add(rawTalent[i].ID);
+                                throw (new NotImplementedException());
+                                //UNCOMMENT THIS jdsToDelete.Add(rawTalent[i].ID);
                                 break; //break out of this loop because we've handled the [i] JD
                             }
                         }
@@ -80,7 +83,7 @@ namespace ResumeScrape
                 //update the console
                 complete_counter++;
 
-                Oden.ConsoleIO.printTimeStatus(watch.Elapsed, Math.Round(complete_counter * 100.0 / unique_names.Count, 1).ToString() + "%, " + delete_counter.ToString() + " Deleted, " + complete_counter.ToString() + "/" + unique_names.Count.ToString() + " " + firstName + " Complete in ");
+                ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, Math.Round(complete_counter * 100.0 / unique_names.Count, 1).ToString() + "%, " + delete_counter.ToString() + " Deleted, " + complete_counter.ToString() + "/" + unique_names.Count.ToString() + " " + firstName + " Complete in ");
             }
         }
     }

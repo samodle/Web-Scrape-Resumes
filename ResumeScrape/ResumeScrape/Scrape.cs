@@ -1,4 +1,4 @@
-﻿using Oden.Talent;
+﻿using ShackletonJobData.Talent;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -50,12 +50,12 @@ namespace ResumeScrape
             foreach (var term in SearchTerms)
             {
                 Console.WriteLine("***");
-                Oden.ConsoleIO.printTimeStatus(watch.Elapsed, $"Starting {term}:", $", {termCount} of {SearchTerms.Count}");
+                ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, $"Starting {term}:", $", {termCount} of {SearchTerms.Count}");
                 Console.WriteLine("***");
                 termCount++;
                 for (int i = 1; i <= numberOfSearchPages; i++)
                 {
-                    Oden.ConsoleIO.printTimeStatus(watch.Elapsed, $"Page {i}:");
+                    ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, $"Page {i}:");
                     driver.Navigate().GoToUrl(GetJobCaseSearchURL(term, "", i));
                     var validityText = "No Results";
 
@@ -67,12 +67,12 @@ namespace ResumeScrape
 
                     catch
                     {
-                        Oden.ConsoleIO.printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
-                        Oden.ConsoleIO.printTimeStatus(watch.Elapsed, "Timout at: ");
+                        ShackletonJobData.ConsoleIO.printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
+                        ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, "Timout at: ");
 
                         System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
-                        Oden.ConsoleIO.printTimeStatus(watch.Elapsed, $"Page {i}:");
+                        ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, $"Page {i}:");
                         driver.Navigate().GoToUrl(GetJobCaseSearchURL(term, "", i));
                         var validityCheckElement = driver.FindElement(By.XPath("/html/body/div/div[2]/div[2]/div/div"));
                         validityText = validityCheckElement.Text;
@@ -109,8 +109,8 @@ namespace ResumeScrape
                             }
                             catch
                             {
-                                Oden.ConsoleIO.printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
-                                Oden.ConsoleIO.printTimeStatus(watch.Elapsed, "Timout at: ");
+                                ShackletonJobData.ConsoleIO.printEmphStatus("POTENTIAL 500 ERROR. Pausing 2 Minutes.");
+                                ShackletonJobData.ConsoleIO.printTimeStatus(watch.Elapsed, "Timout at: ");
                                 goodToGo = false;
                                 System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2 + timeoutCounter));
                                 driver.Navigate().GoToUrl(url);

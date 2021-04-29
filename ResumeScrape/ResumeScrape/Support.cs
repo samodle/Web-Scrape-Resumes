@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using Oden;
-using Oden.Enums;
-using Oden.Talent;
+using ShackletonJobData;
+using ShackletonJobData.Enums;
+using ShackletonJobData.Talent;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -16,9 +16,9 @@ namespace ResumeScrape
 
         private static void ExportResumes(List<Talent> exportList)
         {
-            MongoClient dbClient = new MongoClient(Oden.Mongo.Connection.LOCAL);
-            IMongoDatabase database = dbClient.GetDatabase(Oden.Mongo.DB.TALENT);
-            var resume_collection = database.GetCollection<BsonDocument>(Oden.Mongo.Collection.RESUME);
+            MongoClient dbClient = new MongoClient(ShackletonJobData.Mongo.Connection.LOCAL);
+            IMongoDatabase database = dbClient.GetDatabase(ShackletonJobData.Mongo.DB.TALENT);
+            var resume_collection = database.GetCollection<BsonDocument>(ShackletonJobData.Mongo.Collection.RESUME);
 
             var EmpInfoArray = new List<BsonDocument>();
             foreach (Talent t in exportList)
